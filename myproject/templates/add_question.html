@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Add Question to {{ form.title }}</h1>
+<form method="post">
+  <label>Question Text</label>
+  <input type="text" name="text" required>
+  <button type="submit">Add Question</button>
+</form>
+<a href="{{ url_for('fill_form', form_id=form.id) }}">Done</a>
+{% endblock %}

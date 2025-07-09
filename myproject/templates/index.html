@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Forms</h1>
+<ul>
+{% for form in forms %}
+  <li><a href="{{ url_for('fill_form', form_id=form.id) }}">{{ form.title }}</a> - <a href="{{ url_for('add_question', form_id=form.id) }}">Add Questions</a> - <a href="{{ url_for('form_results', form_id=form.id) }}">Results</a></li>
+{% endfor %}
+</ul>
+<a href="{{ url_for('create_form') }}">Create New Form</a>
+{% endblock %}
