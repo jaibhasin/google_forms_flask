@@ -38,9 +38,17 @@ def add_question(form_id):
     form = models.Form.query.get_or_404(form_id)
     if request.method == 'POST':
         text = request.form.get('text')
+        q_type = request.form.get('question_type', 'text')
+        options = request.form.get('options')
         if text:
-            question = models.Question(text=text, form_id=form.id)
+            question = models.Question(text=text, form_id=form.id, question_type=q_type)
             db.session.add(question)
+            db.session.commit()
+            if q_type == 'multiple' and options:
+                for opt in options.split(','):
+                    opt_text = opt.strip()
+                    if opt_text:
+                        db.session.add(models.Option(question_id=question.id, text=opt_text))
             db.session.commit()
             return redirect(url_for('add_question', form_id=form.id))
     return render_template('add_question.html', form=form)

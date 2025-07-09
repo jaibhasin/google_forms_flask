@@ -1,10 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Add Question to {{ form.title }}</h1>
-<form method="post">
-  <label>Question Text</label>
-  <input type="text" name="text" required>
-  <button type="submit">Add Question</button>
+<h1 class="mb-4">Add Question to {{ form.title }}</h1>
+<form method="post" class="mb-3">
+  <div class="mb-3">
+    <label class="form-label">Question Text</label>
+    <input class="form-control" type="text" name="text" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Type</label>
+    <select class="form-select" name="question_type">
+      <option value="text">Text</option>
+      <option value="multiple">Multiple Choice</option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Options (comma separated for multiple choice)</label>
+    <input class="form-control" type="text" name="options">
+  </div>
+  <button class="btn btn-primary" type="submit">Add Question</button>
 </form>
-<a href="{{ url_for('fill_form', form_id=form.id) }}">Done</a>
+<a class="btn btn-secondary" href="{{ url_for('fill_form', form_id=form.id) }}">Done</a>
 {% endblock %}
