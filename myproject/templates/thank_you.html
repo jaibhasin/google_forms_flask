@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<p class="fs-4">Thank you for submitting the form.</p>
-<a class="btn btn-primary" href="{{ url_for('index') }}">Back to home</a>
+<div class="card">
+  <div class="card-body text-center">
+    <p class="fs-4">Thank you for submitting the form.</p>
+    <a class="btn btn-primary" href="{{ url_for('index') }}">Back to home</a>
+  </div>
+</div>
 {% endblock %}
