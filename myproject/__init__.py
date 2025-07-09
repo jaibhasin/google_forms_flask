@@ -57,10 +57,11 @@ def add_question(form_id):
 def fill_form(form_id):
     form = models.Form.query.get_or_404(form_id)
     if request.method == 'POST':
+        email = request.form.get('email')
         for question in form.questions:
             answer_text = request.form.get(f'q_{question.id}')
-            if answer_text:
-                answer = models.Answer(question_id=question.id, answer_text=answer_text)
+            if answer_text and email:
+                answer = models.Answer(question_id=question.id, answer_text=answer_text, email=email)
                 db.session.add(answer)
         db.session.commit()
         return redirect(url_for('thank_you'))
@@ -73,5 +74,12 @@ def thank_you():
 @app.route('/form/<int:form_id>/results')
 def form_results(form_id):
     form = models.Form.query.get_or_404(form_id)
-    return render_template('results.html', form=form)
+    chart_data = {}
+    for q in form.questions:
+        if q.question_type == 'multiple':
+            counts = {}
+            for opt in q.options:
+                counts[opt.text] = models.Answer.query.filter_by(question_id=q.id, answer_text=opt.text).count()
+            chart_data[q.id] = counts
+    return render_template('results.html', form=form, chart_data=chart_data)
 

@@ -43,10 +43,16 @@ class Answer(db.Model):
 
     id = db.Column(db.Integer , primary_key=True)
     question_id = db.Column(db.Integer , db.ForeignKey('questions.id') , nullable=False)
+    email = db.Column(db.String(120), nullable=False)
     answer_text = db.Column(db.String(200) , nullable=False)
-    def __init__(self, question_id, answer_text):
+    def __init__(self, question_id, answer_text, email):
         self.question_id = question_id
         self.answer_text = answer_text
+        self.email = email
     
-    def __repr__(self):        return f"Id : {self.id} , Question Id : {self.question_id} , Answer : {self.answer_text} "
+    def __repr__(self):
+        return (
+            f"Id : {self.id} , Question Id : {self.question_id} , "
+            f"Email : {self.email} , Answer : {self.answer_text} "
+        )
 

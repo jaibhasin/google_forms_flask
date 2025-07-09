@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+myproject/data.sqlite
+myproject/data.sqlite.backup
