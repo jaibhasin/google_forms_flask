@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ form.title }}</h1>
+<form method="post">
+{% for question in form.questions %}
+  <label>{{ question.text }}</label><br>
+  <input type="text" name="q_{{ question.id }}" required><br><br>
+{% endfor %}
+  <button type="submit">Submit</button>
+</form>
+{% endblock %}
