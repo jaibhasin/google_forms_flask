@@ -14,15 +14,27 @@ class Form(db.Model):
 
 class Question(db.Model):
     __tablename__ = 'questions'
-    
-    id = db.Column(db.Integer , primary_key=True)
-    text = db.Column(db.String(200) , nullable=False)
+
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(200), nullable=False)
     form_id = db.Column(db.Integer, db.ForeignKey('forms.id'), nullable=False)
     answers = db.relationship('Answer', backref='question', lazy='dynamic')
+    options = db.relationship('Option', backref='question', lazy='dynamic')
 
     def __init__(self, text, form_id):
         self.text = text
         self.form_id = form_id
+
+class Option(db.Model):
+    __tablename__ = 'options'
+
+    id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
+    text = db.Column(db.String(200), nullable=False)
+
+    def __init__(self, question_id, text):
+        self.question_id = question_id
+        self.text = text
 
 class Answer(db.Model):
     __tablename__ = 'answers'
