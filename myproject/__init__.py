@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
@@ -13,6 +13,8 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from . import models
+from io import BytesIO
+from openpyxl import Workbook
 
 with app.app_context():
     db.create_all()
@@ -82,4 +84,40 @@ def form_results(form_id):
                 counts[opt.text] = models.Answer.query.filter_by(question_id=q.id, answer_text=opt.text).count()
             chart_data[q.id] = counts
     return render_template('results.html', form=form, chart_data=chart_data)
+
+
+@app.route('/form/<int:form_id>/export')
+def export_excel(form_id):
+    form = models.Form.query.get_or_404(form_id)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = 'Responses'
+
+    header = ['Email'] + [q.text for q in form.questions]
+    ws.append(header)
+
+    email_rows = (
+        db.session.query(models.Answer.email)
+        .join(models.Question)
+        .filter(models.Question.form_id == form_id)
+        .distinct()
+        .all()
+    )
+    for (email,) in email_rows:
+        row = [email]
+        for q in form.questions:
+            ans = models.Answer.query.filter_by(question_id=q.id, email=email).first()
+            row.append(ans.answer_text if ans else '')
+        ws.append(row)
+
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    filename = f"{form.title}_responses.xlsx"
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        download_name=filename,
+        as_attachment=True,
+    )
 
