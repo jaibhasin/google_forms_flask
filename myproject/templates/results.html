@@ -6,7 +6,7 @@
 {% for question in form.questions %}
   <h5 class="mt-4">{{ question.text }}</h5>
   {% if question.question_type == 'multiple' %}
-    <canvas id="chart-{{ question.id }}" height="200"></canvas>
+    <canvas id="chart-{{ question.id }}" height="200" width="300" style="max-width: 100%; height: auto;"></canvas>
     <script>
       var ctx = document.getElementById('chart-{{ question.id }}').getContext('2d');
       new Chart(ctx, {
@@ -28,7 +28,10 @@
     </ul>
   {% endif %}
 {% endfor %}
-<a class="btn btn-secondary" href="{{ url_for('index') }}">Back</a>
+<div class="mt-3">
+  <a class="btn btn-success" href="{{ url_for('export_excel', form_id=form.id) }}">Export to Excel</a>
+  <a class="btn btn-secondary" href="{{ url_for('index') }}">Back</a>
+</div>
 </div>
 </div>
 {% endblock %}
