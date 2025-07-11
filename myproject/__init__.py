@@ -16,8 +16,8 @@ from . import models
 from io import BytesIO
 from openpyxl import Workbook
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
 @app.route('/')
 def index():
