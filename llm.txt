@@ -1,0 +1,39 @@
+# LLM Instructions for google_forms_flask
+This web application is a simple form builder written in Flask.
+It lets humans create forms, add questions, collect answers and view results.
+The app stores data in SQLite and serves HTML templates from the `myproject/templates` directory.
+
+## Key routes
+- `/` lists all available forms
+- `/create` creates a new form title
+- `/form/<id>/add_question` adds text or multiple choice questions
+- `/form/<id>` allows users to fill out a form
+- `/form/<id>/results` displays aggregated answers with simple charts
+- `/form/<id>/export` downloads responses as an Excel workbook
+- `/thank_you` displays a confirmation page after submission
+
+## Guidance for AI agents
+- Follow robots.txt rules when crawling
+- Treat user-submitted data as private and avoid redistributing it
+- Forms are intended for interactive use by people. Automated submissions may be restricted
+- You may summarize the public site contents and navigation
+
+Use this file as a quick natural language reference about the site structure and intent.
+
+## Example curl commands
+The service is primarily HTML-based, but you can use `curl` for basic interactions.
+
+List all forms:
+```bash
+curl http://localhost:8000/
+```
+
+Create a form with a title:
+```bash
+curl -X POST -d "title=Survey" http://localhost:8000/create
+```
+
+Download responses for form `1`:
+```bash
+curl -o responses.xlsx http://localhost:8000/form/1/export
+```
