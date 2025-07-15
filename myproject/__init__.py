@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, send_file
+from sqlalchemy import func
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
@@ -22,7 +23,14 @@ from openpyxl import Workbook
 @app.route('/')
 def index():
     forms = models.Form.query.all()
-    return render_template('index.html', forms=forms)
+    counts = {
+        f.id: db.session.query(func.count(models.Answer.id))
+        .join(models.Question)
+        .filter(models.Question.form_id == f.id)
+        .scalar()
+        for f in forms
+    }
+    return render_template('index.html', forms=forms, counts=counts)
 
 @app.route('/create', methods=['GET', 'POST'])
 def create_form():
@@ -42,8 +50,14 @@ def add_question(form_id):
         text = request.form.get('text')
         q_type = request.form.get('question_type', 'text')
         options = request.form.get('options')
+        required = bool(request.form.get('is_required'))
         if text:
-            question = models.Question(text=text, form_id=form.id, question_type=q_type)
+            question = models.Question(
+                text=text,
+                form_id=form.id,
+                question_type=q_type,
+                is_required=required,
+            )
             db.session.add(question)
             db.session.commit()
             if q_type == 'multiple' and options:
@@ -55,6 +69,14 @@ def add_question(form_id):
             return redirect(url_for('add_question', form_id=form.id))
     return render_template('add_question.html', form=form)
 
+@app.post('/question/<int:question_id>/delete')
+def delete_question(question_id):
+    question = models.Question.query.get_or_404(question_id)
+    form_id = question.form_id
+    db.session.delete(question)
+    db.session.commit()
+    return redirect(url_for('add_question', form_id=form_id))
+
 @app.route('/form/<int:form_id>', methods=['GET', 'POST'])
 def fill_form(form_id):
     form = models.Form.query.get_or_404(form_id)
@@ -62,6 +84,8 @@ def fill_form(form_id):
         email = request.form.get('email')
         for question in form.questions:
             answer_text = request.form.get(f'q_{question.id}')
+            if question.is_required and not answer_text:
+                return render_template('fill_form.html', form=form, error='Please fill all required questions.')
             if answer_text and email:
                 answer = models.Answer(question_id=question.id, answer_text=answer_text, email=email)
                 db.session.add(answer)
@@ -84,6 +108,14 @@ def form_results(form_id):
                 counts[opt.text] = models.Answer.query.filter_by(question_id=q.id, answer_text=opt.text).count()
             chart_data[q.id] = counts
     return render_template('results.html', form=form, chart_data=chart_data)
+
+
+@app.post('/form/<int:form_id>/delete')
+def delete_form(form_id):
+    form = models.Form.query.get_or_404(form_id)
+    db.session.delete(form)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 
 @app.route('/form/<int:form_id>/export')

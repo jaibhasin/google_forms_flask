@@ -6,11 +6,17 @@
 <ul class="list-group mb-3">
 {% for form in forms %}
   <li class="list-group-item d-flex justify-content-between align-items-center">
-    <span>{{ form.title }}</span>
+    <div>
+      <div>{{ form.title }}</div>
+      <small class="text-muted">Responses: {{ counts[form.id] }}</small>
+    </div>
     <span>
       <a class="btn btn-sm btn-primary" href="{{ url_for('fill_form', form_id=form.id) }}">Fill</a>
-      <a class="btn btn-sm btn-secondary" href="{{ url_for('add_question', form_id=form.id) }}">Add Questions</a>
+      <a class="btn btn-sm btn-secondary" href="{{ url_for('add_question', form_id=form.id) }}">Edit</a>
       <a class="btn btn-sm btn-info" href="{{ url_for('form_results', form_id=form.id) }}">Results</a>
+      <form method="post" action="{{ url_for('delete_form', form_id=form.id) }}" class="d-inline">
+        <button class="btn btn-sm btn-danger" onclick="return confirm('Delete form?');">Delete</button>
+      </form>
     </span>
   </li>
 {% endfor %}
