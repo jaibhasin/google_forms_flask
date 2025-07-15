@@ -5,7 +5,9 @@ class Form(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50) , nullable=False)
-    questions = db.relationship('Question', backref='form', lazy='dynamic')
+    questions = db.relationship(
+        'Question', backref='form', lazy='dynamic', cascade='all, delete-orphan'
+    )
     def __init__(self, name):
         self.title = name
     
@@ -19,13 +21,19 @@ class Question(db.Model):
     text = db.Column(db.String(200), nullable=False)
     question_type = db.Column(db.String(20), nullable=False, default='text')
     form_id = db.Column(db.Integer, db.ForeignKey('forms.id'), nullable=False)
-    answers = db.relationship('Answer', backref='question', lazy='dynamic')
-    options = db.relationship('Option', backref='question', lazy='dynamic')
+    is_required = db.Column(db.Boolean, nullable=False, default=True)
+    answers = db.relationship(
+        'Answer', backref='question', lazy='dynamic', cascade='all, delete-orphan'
+    )
+    options = db.relationship(
+        'Option', backref='question', lazy='dynamic', cascade='all, delete-orphan'
+    )
 
-    def __init__(self, text, form_id, question_type='text'):
+    def __init__(self, text, form_id, question_type='text', is_required=True):
         self.text = text
         self.form_id = form_id
         self.question_type = question_type
+        self.is_required = is_required
 
 class Option(db.Model):
     __tablename__ = 'options'
