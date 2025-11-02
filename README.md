@@ -1,4 +1,4 @@
-# Google Forms Flask
+# Gougon Forms Flask
 
 This project contains a lightweight form builder written with [Flask](https://flask.palletsprojects.com/). It allows you to create simple web forms, collect responses and review submissions. Data is stored locally in SQLite and the user interface uses Bootstrap for styling.
 
