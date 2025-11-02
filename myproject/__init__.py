@@ -22,6 +22,12 @@ from openpyxl import Workbook
 
 @app.route('/')
 def index():
+    """
+    Display user's forms (all created forms in this case).
+
+    In future, when authentication is added, this will be filtered
+    by the current user's created forms.
+    """
     forms = models.Form.query.all()
     counts = {
         f.id: db.session.query(func.count(models.Answer.id))
@@ -32,15 +38,43 @@ def index():
     }
     return render_template('index.html', forms=forms, counts=counts)
 
+@app.route('/public-forms')
+def public_forms():
+    """
+    Display all public forms that can be browsed and filled by users.
+
+    Filters only forms marked as public.
+    """
+    public_forms = models.Form.query.filter_by(is_public=True).all()
+    counts = {
+        f.id: db.session.query(func.count(models.Answer.id))
+        .join(models.Question)
+        .filter(models.Question.form_id == f.id)
+        .scalar()
+        for f in public_forms
+    }
+    return render_template('public_forms.html', forms=public_forms, counts=counts)
+
 @app.route('/create', methods=['GET', 'POST'])
 def create_form():
+    """
+    Create a new form with optional public/private visibility.
+
+    Default is private (is_public=False) to ensure data privacy.
+    Users can opt to make their form publicly discoverable.
+    """
     if request.method == 'POST':
         title = request.form.get('title')
+        # Get visibility preference, default to False (private)
+        is_public = bool(request.form.get('is_public'))
+
         if title:
-            form = models.Form(name=title)
+            # Create form with specified visibility
+            form = models.Form(name=title, is_public=is_public)
             db.session.add(form)
             db.session.commit()
             return redirect(url_for('add_question', form_id=form.id))
+
     return render_template('create_form.html')
 
 @app.route('/form/<int:form_id>/add_question', methods=['GET', 'POST'])

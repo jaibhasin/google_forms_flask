@@ -1,18 +1,32 @@
 from myproject import db
 
 class Form(db.Model):
-    __tablename__ = 'forms' 
+    __tablename__ = 'forms'
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50) , nullable=False)
+    is_public = db.Column(db.Boolean, nullable=False, default=False)
     questions = db.relationship(
         'Question', backref='form', lazy='dynamic', cascade='all, delete-orphan'
     )
-    def __init__(self, name):
+    def __init__(self, name, is_public=False):
+        """
+        Initialize a new form with optional public visibility.
+
+        :param name: Title of the form
+        :param is_public: Whether the form is publicly visible (default: False)
+        """
         self.title = name
-    
+        self.is_public = is_public
+
     def __repr__(self):
-        return (f"Id : {self.id} , Title : {self.title} ")
+        """
+        Provide a string representation of the form, including visibility status.
+
+        :return: Descriptive string of form details
+        """
+        visibility = "Public" if self.is_public else "Private"
+        return (f"Id: {self.id}, Title: {self.title}, Visibility: {visibility}")
 
 class Question(db.Model):
     __tablename__ = 'questions'
