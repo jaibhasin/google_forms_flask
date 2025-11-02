@@ -1,37 +1,97 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="card">
-<div class="card-body">
-<h1 class="card-title mb-4">{{ form.title }} - Results</h1>
-{% for question in form.questions %}
-  <h5 class="mt-4">{{ question.text }}</h5>
-  {% if question.question_type == 'multiple' %}
-    <canvas id="chart-{{ question.id }}" height="200" width="200" style="width: 100%; max-width: 300px; height: auto;"></canvas>
-    <script>
-      var ctx = document.getElementById('chart-{{ question.id }}').getContext('2d');
-      new Chart(ctx, {
+<div class="container-fluid results-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="results-header">
+                <h1 class="form-title">{{ form.title }} - Comprehensive Results</h1>
+                <div class="header-actions">
+                    <a class="btn btn-primary" href="{{ url_for('export_excel', form_id=form.id) }}">
+                        <i class="fas fa-file-excel"></i> Export to Excel
+                    </a>
+                    <a class="btn btn-secondary" href="{{ url_for('index') }}">
+                        <i class="fas fa-arrow-left"></i> Back to Forms
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row results-grid">
+        {% for question in form.questions %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="question-results-card">
+                <div class="question-header">
+                    <h4 class="question-text">{{ question.text }}</h4>
+                    <span class="question-type badge
+                        {% if question.question_type == 'multiple' %}badge-primary{% else %}badge-secondary{% endif %}">
+                        {{ question.question_type|capitalize }} Question
+                    </span>
+                </div>
+
+                <div class="question-content">
+                    {% if question.question_type == 'multiple' %}
+                        <div class="chart-container">
+                            <canvas id="chart-{{ question.id }}" class="pie-chart"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            {% for label, count in chart_data[question.id].items() %}
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background-color: {{ loop.cycle('#0d6efd', '#198754', '#dc3545', '#ffc107', '#20c997', '#6c757d') }}"></span>
+                                    <span class="legend-label">{{ label }}: {{ count }} responses</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-responses">
+                            <h5>Responses ({{ question.answers.count() }})</h5>
+                            <div class="response-list">
+                                {% for answer in question.answers %}
+                                    <div class="response-item">
+                                        <p>{{ answer.answer_text }}</p>
+                                        <small class="text-muted">From: {{ answer.email }}</small>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% for question in form.questions %}
+    {% if question.question_type == 'multiple' %}
+    var ctx = document.getElementById('chart-{{ question.id }}').getContext('2d');
+    new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: {{ chart_data[question.id].keys()|list|tojson }},
-          datasets: [{
-            data: {{ chart_data[question.id].values()|list|tojson }},
-            backgroundColor: ['#0d6efd','#198754','#dc3545','#ffc107','#20c997','#6c757d']
-          }]
+            labels: {{ chart_data[question.id].keys()|list|tojson }},
+            datasets: [{
+                data: {{ chart_data[question.id].values()|list|tojson }},
+                backgroundColor: [
+                    '#0d6efd', '#198754', '#dc3545',
+                    '#ffc107', '#20c997', '#6c757d'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
-      });
-    </script>
-  {% else %}
-    <ul class="list-group mb-3">
-    {% for answer in question.answers %}
-      <li class="list-group-item">{{ answer.answer_text }}</li>
+    });
+    {% endif %}
     {% endfor %}
-    </ul>
-  {% endif %}
-{% endfor %}
-<div class="mt-3">
-  <a class="btn btn-success" href="{{ url_for('export_excel', form_id=form.id) }}">Export to Excel</a>
-  <a class="btn btn-secondary" href="{{ url_for('index') }}">Back</a>
-</div>
-</div>
-</div>
+});
+</script>
 {% endblock %}
