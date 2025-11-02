@@ -1,24 +1,812 @@
+/* 
+ * ENHANCED GLASSMORPHISM DARK MODE STYLESHEET
+ * ============================================
+ * This stylesheet implements a sophisticated glassmorphism design system
+ * with enhanced visibility, depth, and aesthetic appeal while maintaining
+ * readability and accessibility standards.
+ *
+ * Key Design Principles:
+ * 1. Multi-layered depth with backdrop filters
+ * 2. Subtle gradients for light simulation
+ * 3. Enhanced borders with inner/outer glow effects
+ * 4. Dynamic background patterns for refraction visibility
+ * 5. Accessible contrast ratios (WCAG AA compliant)
+ */
+
+:root {
+    /* ==================== COLOR PALETTE ==================== */
+    /* Base dark mode colors with enhanced depth */
+    --dark-background: #0a0a0f;              /* Deeper background for better contrast */
+    --dark-background-alt: #121218;          /* Alternative background layer */
+    --dark-surface: #1a1a24;                 /* Primary surface color */
+    --dark-surface-elevated: #242433;        /* Elevated surface elements */
+    
+    /* Text colors with improved hierarchy */
+    --text-primary: #e8e8f0;                 /* High contrast primary text */
+    --text-secondary: #b0b0c0;               /* Secondary text with good readability */
+    --text-tertiary: #808090;                /* Tertiary text for subtle elements */
+    
+    /* Accent colors with glassmorphic variants */
+    --accent-color: #bb86fc;                 /* Primary accent (purple) */
+    --accent-variant: #9965f4;               /* Darker accent variant */
+    --accent-light: #d4b3ff;                 /* Lighter accent for highlights */
+    --accent-glow: rgba(187, 134, 252, 0.4); /* Glow effect color */
+    
+    /* Semantic colors */
+    --error-color: #cf6679;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --info-color: #2196f3;
+    
+    /* ==================== GLASSMORPHISM EFFECTS ==================== */
+    /* Enhanced glass variables with multiple layers */
+    --glass-background-strong: rgba(255, 255, 255, 0.08);    /* Stronger base glass */
+    --glass-background-medium: rgba(255, 255, 255, 0.05);    /* Medium glass effect */
+    --glass-background-subtle: rgba(255, 255, 255, 0.03);    /* Subtle glass tint */
+    
+    /* Glass borders with inner glow effect */
+    --glass-border-strong: rgba(255, 255, 255, 0.25);        /* Strong border */
+    --glass-border-medium: rgba(255, 255, 255, 0.15);        /* Medium border */
+    --glass-border-subtle: rgba(255, 255, 255, 0.08);        /* Subtle border */
+    
+    /* Shadow system for depth */
+    --glass-shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.4);    /* Strong elevation */
+    --glass-shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.3);    /* Medium elevation */
+    --glass-shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.2);     /* Subtle elevation */
+    
+    /* Glow effects for glass edges */
+    --glass-glow-top: rgba(255, 255, 255, 0.1);              /* Top edge highlight */
+    --glass-glow-bottom: rgba(0, 0, 0, 0.2);                 /* Bottom edge shadow */
+    
+    /* Blur intensities */
+    --blur-strong: 24px;
+    --blur-medium: 16px;
+    --blur-subtle: 10px;
+}
+
+/* ==================== BASE STYLES ==================== */
+/* 
+ * Body element with animated gradient background
+ * Creates a dynamic pattern for glass elements to refract against
+ */
 body {
-    background-color: #f5f5f5;
-    font-family: 'Roboto', sans-serif;
+    background: 
+        /* Radial gradient spots for visual interest */
+        radial-gradient(ellipse at 10% 20%, rgba(187, 134, 252, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(153, 101, 244, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(100, 100, 150, 0.03) 0%, transparent 100%),
+        /* Base gradient with subtle color shift */
+        linear-gradient(135deg, var(--dark-background) 0%, var(--dark-background-alt) 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    color: var(--text-primary);
+    font-family: 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    position: relative;
 }
 
-.navbar {
-    background: linear-gradient(90deg, #673ab7, #512da8);
+/*
+ * Animated background particles for enhanced glass refraction
+ * Creates subtle moving elements that the glass effect can blur
+ */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        /* Subtle dot pattern for texture */
+        radial-gradient(circle at 20% 30%, rgba(187, 134, 252, 0.03) 1px, transparent 1px),
+        radial-gradient(circle at 80% 70%, rgba(153, 101, 244, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px, 150px 150px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.5;
 }
 
+/* ==================== GLASSMORPHIC CONTAINER STYLES ==================== */
+/*
+ * Primary card container with enhanced glassmorphism
+ * Features: Multi-layer borders, backdrop blur, gradient overlay, glow effects
+ */
 .card {
-    border: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    margin-bottom: 20px;
+    /* Glass background with fallback */
+    background: 
+        linear-gradient(135deg, var(--glass-background-strong) 0%, var(--glass-background-medium) 100%);
+    
+    /* Critical: Backdrop blur for glass effect */
+    backdrop-filter: blur(var(--blur-medium)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur-medium)) saturate(180%);
+    
+    /* Multi-layer border effect */
+    border: 1px solid var(--glass-border-medium);
+    border-radius: 16px;
+    
+    /* Box shadow for depth and elevation */
+    box-shadow: 
+        var(--glass-shadow-medium),
+        /* Inner glow for top edge */
+        inset 0 1px 0 var(--glass-glow-top),
+        /* Subtle outer glow */
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    
+    color: var(--text-primary);
+    padding: 0;
+    margin-bottom: 24px;
+    
+    /* Smooth transitions for hover effects */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Create stacking context for pseudo-elements */
+    position: relative;
+    overflow: hidden;
 }
 
+/*
+ * Top edge highlight simulation (light source from above)
+ * Creates the illusion of light hitting the top of the glass surface
+ */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--glass-glow-top) 50%, 
+        transparent 100%);
+    pointer-events: none;
+}
+
+/*
+ * Bottom edge shadow for depth
+ * Adds subtle shadow to enhance the floating effect
+ */
+.card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--glass-glow-bottom) 50%, 
+        transparent 100%);
+    pointer-events: none;
+}
+
+/*
+ * Hover state enhancement
+ * Increases brightness and glow on interaction
+ */
+.card:hover {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.10) 0%, 
+            rgba(255, 255, 255, 0.06) 100%);
+    border-color: var(--glass-border-strong);
+    box-shadow: 
+        var(--glass-shadow-strong),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        /* Accent glow on hover */
+        0 0 20px rgba(187, 134, 252, 0.1);
+    transform: translateY(-2px);
+}
+
+/*
+ * Card body with proper spacing and glass continuation
+ */
+.card-body {
+    padding: 28px;
+    position: relative;
+    z-index: 1;
+}
+
+/*
+ * Card title with enhanced visibility
+ */
+.card-title {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+    /* Subtle text shadow for depth */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ==================== FORM ELEMENTS ==================== */
+/*
+ * Form container with moderate glass effect
+ * Less prominent than cards to maintain hierarchy
+ */
+.form-container {
+    background: var(--glass-background-medium);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--glass-shadow-subtle);
+}
+
+/*
+ * Question cards with nested glassmorphism
+ * Creates layered glass effect within forms
+ */
+.question-card {
+    background: var(--glass-background-medium);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    border: 1px solid var(--glass-border-medium);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 
+        var(--glass-shadow-subtle),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transition: all 0.3s ease;
+}
+
+.question-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--glass-border-strong);
+    transform: translateX(4px);
+}
+
+/*
+ * Question text with improved readability
+ */
+.question-text {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+/*
+ * Form controls with glass appearance
+ * Input fields, textareas, and selects
+ */
+.form-control, 
+input[type="text"], 
+input[type="email"], 
+textarea, 
+select,
+.form-select {
+    background: var(--glass-background-strong);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    border: 1px solid var(--glass-border-medium);
+    border-radius: 10px;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/*
+ * Form control focus state
+ * Enhanced with accent color glow
+ */
+.form-control:focus, 
+input:focus, 
+textarea:focus, 
+select:focus,
+.form-select:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color);
+    box-shadow: 
+        0 0 0 3px var(--accent-glow),
+        inset 0 2px 4px rgba(0, 0, 0, 0.1),
+        0 4px 12px rgba(187, 134, 252, 0.2);
+    transform: translateY(-1px);
+}
+
+/*
+ * Placeholder text styling
+ */
+.form-control::placeholder,
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.7;
+}
+
+/* ==================== FORM LABELS ==================== */
+.form-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    display: block;
+    letter-spacing: 0.01em;
+}
+
+/* ==================== BUTTONS ==================== */
+/*
+ * Primary button with glassmorphic accent
+ * Features gradient background and glow effects
+ */
 .btn-primary {
-    background-color: #673ab7;
-    border-color: #673ab7;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-variant) 100%);
+    color: var(--dark-background);
+    border: 1px solid var(--accent-light);
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 4px 12px rgba(187, 134, 252, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/*
+ * Button shine effect on hover
+ */
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
 }
 
 .btn-primary:hover {
-    background-color: #5e35b1;
-    border-color: #5e35b1;
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent-color) 100%);
+    border-color: var(--accent-light);
+    box-shadow: 
+        0 6px 20px rgba(187, 134, 252, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 0 30px rgba(187, 134, 252, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 
+        0 2px 8px rgba(187, 134, 252, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/*
+ * Secondary button with subtle glass effect
+ */
+.btn-secondary {
+    background: var(--glass-background-strong);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border-medium);
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: var(--glass-shadow-subtle);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--glass-border-strong);
+    color: var(--text-primary);
+    box-shadow: var(--glass-shadow-medium);
+    transform: translateY(-2px);
+}
+
+/*
+ * Success button (green glass)
+ */
+.btn-success {
+    background: linear-gradient(135deg, 
+        rgba(76, 175, 80, 0.9) 0%, 
+        rgba(56, 142, 60, 0.9) 100%);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    color: white;
+    border: 1px solid rgba(76, 175, 80, 0.5);
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, 
+        rgba(76, 175, 80, 1) 0%, 
+        rgba(56, 142, 60, 1) 100%);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    transform: translateY(-2px);
+}
+
+/*
+ * Info button (blue glass)
+ */
+.btn-info {
+    background: linear-gradient(135deg, 
+        rgba(33, 150, 243, 0.9) 0%, 
+        rgba(25, 118, 210, 0.9) 100%);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    color: white;
+    border: 1px solid rgba(33, 150, 243, 0.5);
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.btn-info:hover {
+    background: linear-gradient(135deg, 
+        rgba(33, 150, 243, 1) 0%, 
+        rgba(25, 118, 210, 1) 100%);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+    transform: translateY(-2px);
+}
+
+/*
+ * Danger button (red glass)
+ */
+.btn-danger {
+    background: linear-gradient(135deg, 
+        rgba(207, 102, 121, 0.9) 0%, 
+        rgba(183, 82, 101, 0.9) 100%);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    color: white;
+    border: 1px solid rgba(207, 102, 121, 0.5);
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(207, 102, 121, 0.3);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, 
+        rgba(207, 102, 121, 1) 0%, 
+        rgba(183, 82, 101, 1) 100%);
+    box-shadow: 0 6px 20px rgba(207, 102, 121, 0.4);
+    transform: translateY(-2px);
+}
+
+/*
+ * Small button variant
+ */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    border-radius: 8px;
+}
+
+/* ==================== NAVBAR ==================== */
+/*
+ * Navigation bar with strong glassmorphism
+ * Fixed positioning with blur for content underneath
+ */
+.navbar {
+    background: var(--glass-background-strong);
+    backdrop-filter: blur(var(--blur-strong)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur-strong)) saturate(180%);
+    border-bottom: 1px solid var(--glass-border-medium);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.2),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    padding: 16px 0;
+}
+
+/*
+ * Navbar brand styling
+ */
+.navbar-brand {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(187, 134, 252, 0.3);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--accent-light) !important;
+    text-shadow: 0 2px 12px rgba(187, 134, 252, 0.5);
+}
+
+/*
+ * Navbar links
+ */
+.navbar-nav .nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 8px 16px;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+/* ==================== LIST GROUPS ==================== */
+/*
+ * List group with glass styling
+ */
+.list-group {
+    gap: 12px;
+}
+
+/*
+ * List group items with nested glass effect
+ */
+.list-group-item {
+    background: var(--glass-background-medium);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    border: 1px solid var(--glass-border-medium);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 16px 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--glass-shadow-subtle);
+}
+
+.list-group-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--glass-border-strong);
+    transform: translateX(4px);
+    box-shadow: 
+        var(--glass-shadow-medium),
+        -4px 0 12px rgba(187, 134, 252, 0.1);
+}
+
+/*
+ * Text muted for secondary information
+ */
+.text-muted {
+    color: var(--text-tertiary) !important;
+    font-size: 0.875rem;
+}
+
+/* ==================== FORM CHECKS (Radio/Checkbox) ==================== */
+/*
+ * Custom styled checkboxes and radio buttons with glass effect
+ */
+.form-check {
+    padding-left: 0;
+    margin-bottom: 12px;
+}
+
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    background-color: var(--glass-background-strong);
+    border: 2px solid var(--glass-border-medium);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.form-check-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.form-check-label {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ==================== ALERTS ==================== */
+/*
+ * Alert components with glassmorphic styling
+ */
+.alert {
+    backdrop-filter: blur(var(--blur-medium));
+    -webkit-backdrop-filter: blur(var(--blur-medium));
+    border-radius: 12px;
+    border: 1px solid;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--glass-shadow-medium);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, 
+        rgba(207, 102, 121, 0.15) 0%, 
+        rgba(207, 102, 121, 0.08) 100%);
+    border-color: rgba(207, 102, 121, 0.4);
+    color: #ffb3c1;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, 
+        rgba(76, 175, 80, 0.15) 0%, 
+        rgba(76, 175, 80, 0.08) 100%);
+    border-color: rgba(76, 175, 80, 0.4);
+    color: #b3e6b5;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, 
+        rgba(33, 150, 243, 0.15) 0%, 
+        rgba(33, 150, 243, 0.08) 100%);
+    border-color: rgba(33, 150, 243, 0.4);
+    color: #b3d9ff;
+}
+
+/* ==================== ERROR TEXT ==================== */
+.error-text {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 6px;
+    display: block;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+/*
+ * Mobile optimizations
+ * Reduces blur intensity and effects for better performance
+ */
+@media (max-width: 768px) {
+    .form-container, .card {
+        margin: 12px;
+        padding: 16px;
+        border-radius: 12px;
+    }
+    
+    .card-body {
+        padding: 20px;
+    }
+    
+    /* Reduce blur on mobile for better performance */
+    .card {
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
+    }
+    
+    .navbar {
+        backdrop-filter: blur(16px) saturate(180%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+    }
+    
+    /* Stack buttons vertically on mobile */
+    .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    
+    .d-inline .btn {
+        display: inline-block;
+        width: auto;
+    }
+}
+
+/* ==================== TABLET OPTIMIZATIONS ==================== */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        max-width: 90%;
+    }
+    
+    .card {
+        backdrop-filter: blur(18px) saturate(180%);
+        -webkit-backdrop-filter: blur(18px) saturate(180%);
+    }
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+/*
+ * High contrast mode detection and adjustments
+ */
+@media (prefers-contrast: high) {
+    :root {
+        --text-primary: #ffffff;
+        --glass-border-medium: rgba(255, 255, 255, 0.4);
+        --glass-border-strong: rgba(255, 255, 255, 0.6);
+    }
+    
+    .card {
+        border-width: 2px;
+    }
+}
+
+/*
+ * Reduced motion preferences
+ */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .btn-primary::before {
+        display: none;
+    }
+}
+
+/*
+ * Dark mode preference (reinforcement)
+ */
+@media (prefers-color-scheme: dark) {
+    body {
+        color-scheme: dark;
+    }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+/*
+ * Additional utility classes for glassmorphic effects
+ */
+.glass-strong {
+    background: var(--glass-background-strong);
+    backdrop-filter: blur(var(--blur-medium));
+    -webkit-backdrop-filter: blur(var(--blur-medium));
+    border: 1px solid var(--glass-border-strong);
+}
+
+.glass-medium {
+    background: var(--glass-background-medium);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    border: 1px solid var(--glass-border-medium);
+}
+
+.glass-subtle {
+    background: var(--glass-background-subtle);
+    backdrop-filter: blur(var(--blur-subtle));
+    -webkit-backdrop-filter: blur(var(--blur-subtle));
+    border: 1px solid var(--glass-border-subtle);
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .card, .navbar, .form-container {
+        background: white;
+        backdrop-filter: none;
+        border: 1px solid #ccc;
+        box-shadow: none;
+    }
 }

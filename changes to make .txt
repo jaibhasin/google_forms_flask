@@ -1,0 +1,2 @@
+1. it only asks email for formality
+2. it should only allow to edit for same email 
